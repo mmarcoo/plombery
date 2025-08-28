@@ -1,4 +1,5 @@
 from typing import Any, Dict, Optional
+
 from fastapi import APIRouter, HTTPException
 from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel, ValidationError
@@ -8,7 +9,6 @@ from plombery.database.schemas import PipelineRun
 from plombery.orchestrator import orchestrator, run_pipeline_now
 from plombery.pipeline.pipeline import Pipeline
 from plombery.pipeline.trigger import Trigger
-
 
 router = APIRouter(prefix="/pipelines", tags=["Pipelines"], dependencies=[NeedsAuth])
 
@@ -29,10 +29,7 @@ def list_pipelines():
     for pipeline in pipelines:
         _populate_next_fire_time(pipeline)
 
-    return jsonable_encoder(
-        pipelines,
-        custom_encoder=Trigger.Config.json_encoders,
-    )
+    return jsonable_encoder(pipelines)
 
 
 @router.get("/{pipeline_id}", response_model=None, description="Get a single pipeline")
@@ -42,7 +39,7 @@ def get_pipeline(pipeline_id: str):
 
     _populate_next_fire_time(pipeline)
 
-    return jsonable_encoder(pipeline, custom_encoder=Trigger.Config.json_encoders)
+    return jsonable_encoder(pipeline)
 
 
 @router.get(

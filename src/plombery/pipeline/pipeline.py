@@ -1,22 +1,21 @@
 from typing import Any, List, Optional, Type
 
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
+from ._utils import prettify_name
 from .task import Task
 from .trigger import Trigger
-from ._utils import prettify_name
 
 
 class Pipeline(BaseModel):
+    model_config = ConfigDict(validate_assignment=True)
+
     id: str
     tasks: List[Task]
     name: Optional[str]
     description: Optional[str] = None
     params: Optional[Type[BaseModel]] = Field(exclude=True, default=None)
     triggers: List[Trigger] = Field(default_factory=list)
-
-    class Config:
-        validate_assignment = True
 
     @model_validator(mode="before")
     @classmethod

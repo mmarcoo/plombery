@@ -1,7 +1,7 @@
-from typing import List, Optional
 from enum import Enum
+from typing import List, Optional
 
-from pydantic import BaseModel, Field, NonNegativeFloat
+from pydantic import BaseModel, ConfigDict, Field, NonNegativeFloat
 
 
 class PipelineRunStatus(str, Enum):
@@ -13,15 +13,14 @@ class PipelineRunStatus(str, Enum):
 
 
 class TaskRun(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     duration: Optional[NonNegativeFloat] = 0
     """Task duration in milliseconds"""
     has_output: bool = False
     """True if the task generated an output"""
     status: Optional[PipelineRunStatus] = PipelineRunStatus.PENDING
     task_id: str
-
-    class Config:
-        from_attributes = True
 
 
 class NotificationRule(BaseModel):
