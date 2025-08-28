@@ -4,7 +4,7 @@ from typing import Annotated, Optional
 from apscheduler.triggers.base import BaseTrigger
 from pydantic import BaseModel, ConfigDict, PlainSerializer
 
-SerializableBaseTrigger = Annotated[str, PlainSerializer(lambda v: str(v))]
+SerializableBaseTrigger = Annotated[BaseTrigger, PlainSerializer(lambda v: str(v))]
 
 
 class Trigger(BaseModel):
